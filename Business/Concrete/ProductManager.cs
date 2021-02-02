@@ -3,30 +3,32 @@ using System.Collections.Generic;
 using System.Text;
 using Business.Abstract;
 using DataAccess.Abstract;
-using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 
+// İş Katmanı Somut Sınıfı
 namespace Business.Concrete
 {
-   public class ProductManager:IProductService // İş Katmanı Somut Sınıfı
+    public class ProductManager : IProductService /*ProductManager Newlendiğinde constructor(18. Satırda) bloguna 
+tanımlanan Tanımlanan referanı veriyoruz.*/
+    
     {// İş kodları varsa;
 
-        IProductDal _productDal;
+        IProductDal _productDal;//Dependency Injection - Burada bunu yapmamızın sebebi DateAcess Layer katmanı ile haberleştirmek. 
 
-        public ProductManager(IProductDal productDal)
+        public ProductManager(IProductDal productDal) // Soyut nesne ile bağlantı kuruyoruz.
         {
-            _productDal = productDal;
+            _productDal = productDal; 
         }
+        
 
         public List<Product> GetAll()
         {
-            //InMemoryProductDal  inMemoryProductDal = new InMemoryProductDal();
-            //Yetkisi var mı kodları?
-            //if kodları 
-            return _productDal.GetAll()
+            //İş Kodları
+            //Yetkisi var mı gibi kodlar yazılır.
+            //if kodları burada yer alır.
+            return _productDal.GetAll(); //Eğer iş kodlarından geçiyorsa Veri tabanına gidiyor ve
+                                         //iş kodlarından geçtiği için datayı date access veri aktarıyor.
 
-
-
-;        }
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace Entities.Concrete
         public short UnitInStock { get; set; }
         public decimal UnitPrice { get; set; }
 
+        
 
     }
 

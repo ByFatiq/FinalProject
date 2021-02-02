@@ -7,9 +7,10 @@ using Entities.Concrete;
 
 namespace DataAccess.Concrete.InMemory
 {
-    public class InMemoryProductDal : IProductDal
+    public class  InMemoryProductDal : IProductDal
     {
-        private List<Product> _products;
+        private List<Product> _products; //Ürünlerin Bellekte Referansını Oluşturur.
+        private IProductDal _productDalImplementation;
 
         public InMemoryProductDal()//constructor Uygulama newlendiği anda çalışır.
         {
@@ -24,9 +25,8 @@ namespace DataAccess.Concrete.InMemory
             };
         }
 
-     
 
-       
+        
 
         public void Add(Product product)
         {
@@ -34,8 +34,8 @@ namespace DataAccess.Concrete.InMemory
         }
 
         public void Delete(Product product)
-        {//LINQ dile Entegre sorgulama.
-            //Product producttoDelete= null; 49.Satır Kısaltması olduğu için commendledik.
+        {//LINQ dile Entegre sorgulama demektir.
+            //Product producttoDelete= null; 49.Satır LINQ şeklinde kısaltarak yazdığımız için commendledik.
 
 
             //foreach (var p in _products)
@@ -48,18 +48,24 @@ namespace DataAccess.Concrete.InMemory
 
             Product productToDelete = _products.SingleOrDefault(p=>p.ProductId==product.ProductId); // bu kod foreach'i yapıyor.
             //p=> Her p için git bak benim gönderdiğim product id'si eşit mi? Eşit olanı sil, diyoruz
-            _products.Remove(product);
+            //*.SingleOrDefault genelde ID aramalarında kullanılır.
+            //*.FirstOrDefault & *.First >> ALTERNATİFLERİ
+
+            _products.Remove(productToDelete);
 
 
         }
 
-        public List<Product> GetAllByCategory(int categoryId)
+       
+
+        public List<Product> GetAll()
         {
-           return _products.Where(p => p.CategoryId == categoryId).ToList(); // Yeni bir liste haline getirip onu döndürür.
+            return _products;
         }
+        
 
         public void Update(Product product)
-        {//Gönderdiğim ürün ID'sine sahip olan listedeki ürünü bul - 60 * 63 Değerleri eşitle.
+        {//Gönderdiğim ürün ID'sine sahip olan listedeki ürünü bul - 68 * 71. satıra kadar olan Değerleri eşitle.
             Product productToUpdate = _products.SingleOrDefault(p => p.ProductId == product.ProductId); // bu kod foreach'i yapıyor.
 
             productToUpdate.ProductName = product.ProductName;
@@ -70,9 +76,12 @@ namespace DataAccess.Concrete.InMemory
 
 
 
-        public List<Product> GetAll()
+        public List<Product> GetAllByCategory(int categoryId)
         {
-            return _products;
+            return _products.Where(p => p.CategoryId == categoryId).ToList(); // Yeni bir liste haline getirip onu döndürür.
+
+            /*Where içerideki koşula uyan tüm elemanları yeni liste haline getirir.
+             return ile bu liste döndürülür.*/
         }
 
     }
