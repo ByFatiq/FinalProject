@@ -8,5 +8,7 @@ namespace Business.Abstract
     public interface IProductService // iş katmanında kullanacağımız servis katmanı.
     {
         List<Product> GetAll();
+        List<Product> GetAllByCategoryId(int Id);
+        List<Product> GetByUnitPrice(decimal min, decimal max);
     }
 }

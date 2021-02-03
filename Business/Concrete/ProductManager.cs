@@ -30,5 +30,15 @@ tanımlanan Tanımlanan referanı veriyoruz.*/
                                          //iş kodlarından geçtiği için datayı date access veri aktarıyor.
 
         }
+
+        public List<Product> GetAllByCategoryId(int Id) // CategoryId 'ye göre getir.
+        {
+            return _productDal.GetAll(p => p.CategoryId == Id);
+        }
+
+        public List<Product> GetByUnitPrice(decimal min, decimal max) // Fiyat aralığı min - max değerleri getirir.
+        {
+            return _productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max);
+        }
     }
 }
