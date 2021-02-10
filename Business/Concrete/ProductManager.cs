@@ -4,6 +4,7 @@ using System.Text;
 using Business.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 
 // İş Katmanı Somut Sınıfı
 namespace Business.Concrete
@@ -39,6 +40,11 @@ tanımlanan Tanımlanan referanı veriyoruz.*/
         public List<Product> GetByUnitPrice(decimal min, decimal max) // Fiyat aralığı min - max değerleri getirir.
         {
             return _productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max);
+        }
+
+        public List<ProductDetailDto> GetProductDetails()
+        {
+           return _productDal.GetProductDetails();
         }
     }
 }

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
-using Entities.Abstract;
+using Core.Entities;
 
-namespace DataAccess.Abstract
+namespace Core.DateAccess
 {
 
-    //geberic constraint -- Generic Kısıtlama.
+    //generic constraint -- Generic Kısıtlama.
     //class : Referans Tip
-    //T>> IEntity de olabilir veya IEntity implemente eden bir nesne olabilir.IEntity newlenemez.
-    // new(); yalnızca newlenebilir 
+    //T>> IEntity de olabilir veya IEntity implemente eden bir nesne olabilir.IEntity ise newlenemez.
+    // new(); yalnızca newlenebilir olmalı
     public interface IEntityRepository<T>where T:class,IEntity,new()
     {
         List<T> GetAll(Expression<Func<T,bool>>filter=null); //filtre yazabilmemizi sağlıyor. 

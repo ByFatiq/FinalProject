@@ -6,7 +6,7 @@ using Entities.Concrete;
 
 namespace DataAccess.Abstract
 {
-    public interface ICustomerDal : IEntityRepository<Customer>
+    public interface IOrderDal:IEntityRepository<Order> // Her bir satırı anlattığı için Order tekil şekilde yazılır. SqlServer'da ise ORDERS çoğul.
     {
     }
 }

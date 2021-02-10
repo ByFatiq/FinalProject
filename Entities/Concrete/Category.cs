@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Entities.Abstract; //Farklı klasörden class implemente etmek istiyorsak bu şekilde  eklememiz gerek. Buna İşaretleme Denir.
+using Core.Entities; //Farklı klasörden class implemente etmek istiyorsak bu şekilde  eklememiz gerek. Buna İşaretleme Denir.
+
 
 namespace Entities.Concrete
 {

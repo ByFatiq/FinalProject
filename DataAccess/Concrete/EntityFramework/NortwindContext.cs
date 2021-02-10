@@ -18,5 +18,6 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<Product> Products { get; set; } //Hangi tablo hangi clasa denk geliyor.
         public DbSet<Category> Categories { get; set; }
         public DbSet<Customer> Customer { get; set; }
+        public DbSet<Order> Orders { get; set; }
     }
 }
