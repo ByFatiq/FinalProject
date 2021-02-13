@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Utilities.Results;
 using Entities.Concrete;
 using Entities.DTOs;
 
@@ -8,10 +9,16 @@ namespace Business.Abstract
 {
     public interface IProductService // iş katmanında kullanacağımız servis katmanı.
     {
-        List<Product> GetAll();
-        List<Product> GetAllByCategoryId(int Id);
-        List<Product> GetByUnitPrice(decimal min, decimal max);
+        IDataResult<List<Product>> GetAll(); // IDataResult hem işlem sonucu hem mesajı hemde listeyi döndüren bi yapı görevi görür.
+                                             //T liste tipinde product'a ait herşeyi getir.
 
-        List<ProductDetailDto> GetProductDetails();
+        IDataResult<List<Product>> GetAllByCategoryId(int Id);
+        IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max);
+
+        IDataResult<List<ProductDetailDto>>GetProductDetails();
+         
+        IDataResult<Product> GetById (int productId);
+
+        IResult Add (Product product);
     }
 }

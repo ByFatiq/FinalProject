@@ -39,11 +39,21 @@ namespace ConsoleUI
                 productManager = new ProductManager(new EfProductDal()); 
             // Inmemory çalışacağım demek. Bunu EfProductDal'a çekince Entity Framework'e geçer.
             // Bu sayede hangi veri tabanı ile çalışmak istiyorsak o veri tabanını ConsolUI > Program.Cs içerisinde değiştirmemiz yeterlidir.
+            var result = productManager.GetProductDetails();
 
-            foreach (var product in productManager.GetProductDetails())
-            { 
-                Console.WriteLine(product.ProductName + "/" + product.CategoryName); 
+            if (result.Success == true)
+            {
+                foreach (var product in result.Data)
+                {
+                    Console.WriteLine(product.ProductName + "/" + product.CategoryName);
+                }
             }
+
+            else
+            {
+                Console.WriteLine(result.Messagge);
+            }
+            
         }
     }
 }
