@@ -31,7 +31,7 @@ tanımlanan Tanımlanan referanı veriyoruz.*/
             //Yetkisi var mı gibi kodlar yazılır.
             //if kodları burada yer alır.
 
-            if (DateTime.Now.Hour == 19)
+            if (DateTime.Now.Hour == 03)
                 //Maintenance Time > Bakım Zamanı
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
