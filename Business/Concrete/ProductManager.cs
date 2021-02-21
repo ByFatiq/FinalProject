@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Text;
 using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using ValidationException = FluentValidation.ValidationException;
 
 // İş Katmanı Somut Sınıfı
 namespace Business.Concrete
 {
+
+
+
     public class ProductManager : IProductService /*ProductManager Newlendiğinde constructor(18. Satırda) bloguna 
 tanımlanan Tanımlanan referanı veriyoruz.*/
 
@@ -61,7 +70,7 @@ tanımlanan Tanımlanan referanı veriyoruz.*/
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
             if (DateTime.Now.Hour == 19)
-                //Maintenance Time > Bakım Zamanı
+                //Maint1enance Time > Bakım Zamanı
             {
                 return new ErrorDataResult<List<ProductDetailDto>>(Messages.MaintenanceTime);
             }
@@ -70,15 +79,20 @@ tanımlanan Tanımlanan referanı veriyoruz.*/
 
         
 
-
+[ValidationAspect(typeof(ProductValitador))]
         public IResult Add(Product product)
-        {//business Codes - herşey geçerli ise buraya yazıyoruz. eğer böyleyse şöyle gibi durumları yazıyoruz.
+        {//business Codes -  geçerli İş Kodlarını ise buraya yazıyoruz. eğer böyleyse şöyle gibi durumları yazıyoruz.
 
-            if (product.ProductName.Length < 2) //kötü kod yazım şekli
-            {
-                return new ErrorResult(Messages.ProductNameInValid);
-            }
 
+
+
+            /*Validation -  Kelime olarak Doğrulama anlamına gelir. C# 'da bu kısımda Product'a ait
+             * eklenen ürünlerde minimum karakter ve sayı aralığı vb. durumlar
+             *
+             * Bussines Rule > Bizim iş gereksinimlerimizi iş ihtiyaçlarımıza uygunluk.
+             * yani belirlediğimiz kurallar (Bir sınavdan geçerli notu almış mı gibi)
+             */
+            
 
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
