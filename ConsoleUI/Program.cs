@@ -1,5 +1,6 @@
 ﻿using System;
 using Business.Concrete;
+using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 
@@ -16,18 +17,13 @@ namespace ConsoleUI
             // CONSOLE UI -  IoC Container ile daha sonra doldurulacak.
             //CategoryTest();
 
-
-
-
-
-
         }
 
         private static void CategoryTest()
         {
             CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
 
-            foreach (var category in categoryManager.GetAll())
+            foreach (var category in categoryManager.GetAll().Data)
             {
                 Console.WriteLine(category.CategoryName);
             }
@@ -35,8 +31,7 @@ namespace ConsoleUI
 
         private static void ProductTest()
         {
-            ProductManager
-                productManager = new ProductManager(new EfProductDal()); 
+            ProductManager productManager = new ProductManager(new EfProductDal(), new CategoryManager(new EfCategoryDal())); 
             // Inmemory çalışacağım demek. Bunu EfProductDal'a çekince Entity Framework'e geçer.
             // Bu sayede hangi veri tabanı ile çalışmak istiyorsak o veri tabanını ConsolUI > Program.Cs içerisinde değiştirmemiz yeterlidir.
             var result = productManager.GetProductDetails();

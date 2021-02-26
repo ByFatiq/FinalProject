@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 
@@ -19,16 +21,21 @@ namespace Business.Concrete
         }
 
 
-        public List<Category> GetAll()
+     
+
+
+        public IDataResult<List<Category>> GetAll()
         {
-            return _categoryDal.GetAll();
+            //İş kodları
+            return new SuccessDataResult<List<Category>>(_categoryDal.GetAll());
         }
 
 
-
-        public Category GetById(int categoryId) //select * from Category where CategoryId = 3 
+        public IDataResult<Category> GetById(int categoryId)
         {
-            return _categoryDal.Get(c => c.CategoryId == categoryId);
+            return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryId == categoryId));
         }
+
+
     }
 }

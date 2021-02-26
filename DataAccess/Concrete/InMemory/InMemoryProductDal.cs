@@ -12,7 +12,7 @@ namespace DataAccess.Concrete.InMemory
     public class  InMemoryProductDal : IProductDal
     {
         private List<Product> _products; //Ürünlerin Bellekte Referansını Oluşturur.
-        private IProductDal _productDalImplementation;
+        //private IProductDal _productDalImplementation;
 
         public InMemoryProductDal()//constructor Uygulama newlendiği anda çalışır.
         {

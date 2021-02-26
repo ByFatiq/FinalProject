@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Linq;
 using System.Text;
 using Business.Abstract;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -21,16 +24,18 @@ namespace Business.Concrete
 
 
 
-    public class ProductManager : IProductService /*ProductManager Newlendiğinde constructor(18. Satırda) bloguna 
-tanımlanan Tanımlanan referanı veriyoruz.*/
+    public class ProductManager : IProductService 
 
     {// İş kodları varsa;
 
         IProductDal _productDal;//Dependency Injection - Burada bunu yapmamızın sebebi DateAcess Layer katmanı ile haberleştirmek. 
+        ICategoryService _categoryService;
 
-        public ProductManager(IProductDal productDal) // Soyut nesne ile bağlantı kuruyoruz.
+        public ProductManager(IProductDal productDal, ICategoryService categoryService) // Soyut nesne ile bağlantı kuruyoruz.
         {
             _productDal = productDal;
+            _categoryService = categoryService; 
+
         }
 
 
@@ -41,21 +46,19 @@ tanımlanan Tanımlanan referanı veriyoruz.*/
             //if kodları burada yer alır.
 
             if (DateTime.Now.Hour == 03)
-                //Maintenance Time > Bakım Zamanı
+            //Maintenance Time > Bakım Zamanı
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
 
-
-
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductListed); //Eğer iş kodlarından geçiyorsa Veri tabanına gidiyor ve
-                                                                                                            //iş kodlarından geçtiği için datayı date access veri aktarıyor.
+                                                                                                       //iş kodlarından geçtiği için datayı date access veri aktarıyor.
 
         }
 
         public IDataResult<List<Product>> GetAllByCategoryId(int Id) // CategoryId 'ye göre getir.
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == Id)); 
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == Id));
         }
         public IDataResult<Product> GetById(int productId)
         {
@@ -70,32 +73,73 @@ tanımlanan Tanımlanan referanı veriyoruz.*/
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
             if (DateTime.Now.Hour == 19)
-                //Maint1enance Time > Bakım Zamanı
+            //Maint1enance Time > Bakım Zamanı
             {
                 return new ErrorDataResult<List<ProductDetailDto>>(Messages.MaintenanceTime);
             }
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails());
         }
 
-        
 
-[ValidationAspect(typeof(ProductValitador))]
+
+        [ValidationAspect(typeof(ProductValitador))] //Doğrulama Kodu Aspect Tarafından burada yapılıyor.
+
+
+         
         public IResult Add(Product product)
-        {//business Codes -  geçerli İş Kodlarını ise buraya yazıyoruz. eğer böyleyse şöyle gibi durumları yazıyoruz.
+        {
+            //business Codes;
 
 
-
-
-            /*Validation -  Kelime olarak Doğrulama anlamına gelir. C# 'da bu kısımda Product'a ait
-             * eklenen ürünlerde minimum karakter ve sayı aralığı vb. durumlar
-             *
-             * Bussines Rule > Bizim iş gereksinimlerimizi iş ihtiyaçlarımıza uygunluk.
-             * yani belirlediğimiz kurallar (Bir sınavdan geçerli notu almış mı gibi)
-             */
+           IResult result = BussinessRules.Run(CheckIfProductNameExists(product.ProductName), 
+               CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfCategoryLimitExceeded()); 
             
+           if (result !=null)
+           {
+               return result;
+           }
+           
+           return new SuccessResult(Messages.ProductAdded);
 
-            _productDal.Add(product);
-            return new SuccessResult(Messages.ProductAdded);
+        }
+
+        public IResult Update(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
+        {// Select Count(*) from products where gategoryId=1
+            var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
+            if (result >= 15)
+            {
+                return new ErrorResult(Messages.ProductCountofCategoryError);
+            }
+
+            return new SuccessResult();
+        }
+
+
+        private IResult CheckIfProductNameExists(string productName)
+        {// Select Count(*) from products where gategoryId=1
+            var result = _productDal.GetAll(p => p.ProductName == productName).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.ProductNameAlreadyExists);
+            }
+
+            return new SuccessResult();
+        }
+        private IResult CheckIfCategoryLimitExceeded()
+        {// Select Count(*) from products where gategoryId=1
+            var result = _categoryService.GetAll();
+            if (result.Data.Count>15)
+            {
+                return new ErrorResult(Messages.CategoryLimitExceeded);
+            }
+
+            return new SuccessResult();
         }
     }
 }
